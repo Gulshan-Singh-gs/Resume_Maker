@@ -3,193 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Maker</title>
+    <title>Dynamic Resume Generator</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* --- GLOBAL & VARIABLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root {
+            --primary-bg: #0d1b2a; 
+            --secondary-bg: #ffffff; 
+            --text-light: #e0e1dd;
+            --text-dark: #1b263b;
+            --highlight: #778da9;
+            --form-bg: #f4f4f9;
         }
+        body { background-color: var(--form-bg); color: var(--text-dark); line-height: 1.5; }
+
+        /* --- APP CONTROLS & FORM --- */
+        #app-container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .form-section { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-section h1 { margin-bottom: 20px; color: var(--primary-bg); border-bottom: 2px solid var(--highlight); padding-bottom: 10px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        .input-group textarea { resize: vertical; height: 100px; }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        button { background-color: var(--primary-bg); color: white; border: none; padding: 12px 24px; cursor: pointer; font-size: 1rem; border-radius: 4px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: var(--highlight); }
+        .btn-secondary { background-color: var(--highlight); margin-right: 10px; }
+        .btn-secondary:hover { background-color: var(--primary-bg); }
+
+        .resume-controls { text-align: right; margin-bottom: 20px; }
+
+        /* --- RESUME TEMPLATE CSS --- */
+        .resume-wrapper { display: flex; width: 100%; background-color: var(--secondary-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .left-col { width: 35%; background-color: var(--primary-bg); color: var(--text-light); padding: 40px 30px; }
+        .profile-pic-container { text-align: center; margin-bottom: 20px; }
+        .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid var(--highlight); background-color: #fff; }
+        .name-title { text-align: center; margin-bottom: 40px; }
+        .name-title h1 { font-size: 1.8rem; margin-bottom: 5px; color: #fff; }
+        .name-title h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--highlight); }
+        .sidebar-section { margin-bottom: 30px; }
+        .sidebar-section h2 { font-size: 1.2rem; margin-bottom: 15px; border-bottom: 1px solid var(--highlight); padding-bottom: 5px; color: #fff; }
+        .sidebar-item { margin-bottom: 15px; font-size: 0.9rem; word-wrap: break-word; }
+        .sidebar-item a { color: var(--text-light); text-decoration: none; }
         
-        .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            width: 100%;
-            padding: 40px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .section-title {
-            color: #667eea;
-            font-size: 18px;
-            font-weight: 600;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+        .right-col { width: 65%; padding: 40px; }
+        .main-section { margin-bottom: 25px; }
+        .main-section h2 { font-size: 1.3rem; color: var(--primary-bg); margin-bottom: 10px; text-transform: capitalize; border-bottom: 1px solid #ccc; padding-bottom: 5px;}
+        .main-section p { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-wrap; }
+
+        /* --- PRINT MEDIA QUERY (CRITICAL FOR PDF) --- */
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            #app-container { margin: 0; padding: 0; max-width: 100%; }
+            .resume-controls { display: none !important; }
+            .resume-wrapper { box-shadow: none; border: none; }
+            /* Force background colors to print */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📄 Resume Maker</h1>
-        <p class="subtitle">Create your professional resume in minutes</p>
-        
-        <form id="resumeForm">
-            <div class="section-title">Personal Information</div>
-            
-            <div class="form-group">
-                <label for="fullName">Full Name *</label>
-                <input type="text" id="fullName" name="fullName" required>
+
+<div id="app-container">
+
+    <div id="form-view" class="form-section">
+        <h1>Configure Your Resume</h1>
+        <form id="data-form">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="in-name" value="Gulshan Singh" required>
+            </div>
+            <div class="input-group">
+                <label>Job Title / Headline</label>
+                <input type="text" id="in-title" value="Software Engineer" required>
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="in-email" value="gulshanbaudh0606@gmail.com">
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="text" id="in-phone" value="+91 9530580660">
+            </div>
+            <div class="input-group">
+                <label>Location</label>
+                <input type="text" id="in-location" value="Rupnagar, Punjab 140001, India">
+            </div>
+            <div class="input-group">
+                <label>Professional Summary</label>
+                <textarea id="in-summary">Second-year B.Tech Computer Science Engineering student with a strong foundation in Java, Data Structures, and Software Testing. Combines rigorous technical training with the operational discipline of an NCC Cadet. Focused on executing high-efficiency software solutions and building scalable projects.</textarea>
+            </div>
+            <div class="input-group">
+                <label>Core Technical Skills (Comma separated)</label>
+                <textarea id="in-skills">Java, Data Structures & Algorithms (DSA), C++, C, Software Testing, Google Cloud Services, Linux</textarea>
             </div>
             
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone">
-            </div>
-            
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location">
-            </div>
-            
-            <div class="section-title">Professional Summary</div>
-            
-            <div class="form-group">
-                <label for="summary">Summary</label>
-                <textarea id="summary" name="summary" placeholder="Brief overview of your professional background and goals..."></textarea>
-            </div>
-            
-            <div class="section-title">Experience</div>
-            
-            <div class="form-group">
-                <label for="jobTitle">Job Title</label>
-                <input type="text" id="jobTitle" name="jobTitle">
-            </div>
-            
-            <div class="form-group">
-                <label for="company">Company</label>
-                <input type="text" id="company" name="company">
-            </div>
-            
-            <div class="form-group">
-                <label for="jobDescription">Job Description</label>
-                <textarea id="jobDescription" name="jobDescription" placeholder="Describe your responsibilities and achievements..."></textarea>
-            </div>
-            
-            <div class="section-title">Education</div>
-            
-            <div class="form-group">
-                <label for="degree">Degree</label>
-                <input type="text" id="degree" name="degree">
-            </div>
-            
-            <div class="form-group">
-                <label for="school">School/University</label>
-                <input type="text" id="school" name="school">
-            </div>
-            
-            <div class="form-group">
-                <label for="skills">Skills (comma-separated)</label>
-                <textarea id="skills" name="skills" placeholder="e.g., JavaScript, Python, Project Management..."></textarea>
-            </div>
-            
-            <button type="submit">Generate Resume</button>
+            <button type="button" id="btn-generate">Generate Resume &rarr;</button>
         </form>
     </div>
+
+    <div id="resume-view" style="display: none;">
+        
+        <div class="resume-controls">
+            <button type="button" id="btn-edit" class="btn-secondary">&larr; Edit Details</button>
+            <button type="button" id="btn-download">Save as PDF</button>
+        </div>
+
+        <div class="resume-wrapper">
+            <aside class="left-col">
+                <div class="profile-pic-container">
+                    <img src="your-image.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
+                </div>
+                <div class="name-title">
+                    <h1 id="out-name">Name Placeholder</h1>
+                    <h3 id="out-title">Title Placeholder</h3>
+                </div>
+                <div class="sidebar-section">
+                    <h2>Contact</h2>
+                    <div class="sidebar-item" id="out-location">Location</div>
+                    <div class="sidebar-item" id="out-phone">Phone</div>
+                    <div class="sidebar-item" id="out-email">Email</div>
+                </div>
+            </aside>
+
+            <main class="right-col">
+                <section class="main-section">
+                    <h2>Professional Summary</h2>
+                    <p id="out-summary">Summary goes here.</p>
+                </section>
+
+                <section class="main-section">
+                    <h2>Technical Expertise</h2>
+                    <p id="out-skills">Skills go here.</p>
+                </section>
+
+                <section class="main-section">
+                    <h2>Education</h2>
+                    <p><strong>Rayat Bahra University | Kharar, Punjab</strong><br>
+                    <em>B.Tech in Computer Science Engineering (CSE)</em><br>
+                    Expected Graduation: 2028</p>
+                </section>
+
+                <section class="main-section">
+                    <h2>Leadership & Discipline</h2>
+                    <p><strong>National Cadet Corps (NCC) – Cadet</strong><br>
+                    • NCC 'B' Certificate Candidate<br>
+                    • Annual Training Camp (ATC) & Endurance Training</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Element References
+    const formView = document.getElementById('form-view');
+    const resumeView = document.getElementById('resume-view');
     
-    <script>
-        document.getElementById('resumeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Resume generation feature coming soon!');
-        });
-    </script>
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnEdit = document.getElementById('btn-edit');
+    const btnDownload = document.getElementById('btn-download');
+
+    // Execution Logic: Generate Resume
+    btnGenerate.addEventListener('click', () => {
+        // 1. Capture Data
+        const name = document.getElementById('in-name').value;
+        const title = document.getElementById('in-title').value;
+        const email = document.getElementById('in-email').value;
+        const phone = document.getElementById('in-phone').value;
+        const location = document.getElementById('in-location').value;
+        const summary = document.getElementById('in-summary').value;
+        const skills = document.getElementById('in-skills').value;
+
+        // 2. Inject Data into DOM
+        document.getElementById('out-name').innerText = name || 'Name Not Provided';
+        document.getElementById('out-title').innerText = title;
+        document.getElementById('out-email').innerText = email;
+        document.getElementById('out-phone').innerText = phone;
+        document.getElementById('out-location').innerText = location;
+        document.getElementById('out-summary').innerText = summary;
+        document.getElementById('out-skills').innerText = skills;
+
+        // 3. Switch Views
+        formView.style.display = 'none';
+        resumeView.style.display = 'block';
+    });
+
+    // Execution Logic: Go Back to Edit
+    btnEdit.addEventListener('click', () => {
+        resumeView.style.display = 'none';
+        formView.style.display = 'block';
+    });
+
+    // Execution Logic: Print/Download PDF
+    btnDownload.addEventListener('click', () => {
+        // The CSS @media print handles hiding the buttons and adjusting the layout
+        window.print();
+    });
+</script>
+
 </body>
 </html>
