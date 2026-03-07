@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro ATS Resume Builder</title>
+    <style>
+        /* --- MODERN GLOBAL STYLES --- */
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding: 20px; }
+        .app-container { max-width: 850px; margin: 0 auto; }
+
+        /* --- SLEEK FORM UI (No Bloat, Just Polish) --- */
+        #form-view { background: var(--surface); padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; transition: opacity 0.3s ease; }
+        #form-view h1 { font-size: 2rem; margin-bottom: 30px; color: var(--text-main); font-weight: 700; letter-spacing: -0.5px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .full-width { grid-column: 1 / -1; }
+        
+        label { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-main); }
+        .help-text { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        
+        input[type="text"], input[type="email"], select, textarea { 
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; 
+            transition: all 0.2s ease; background-color: #f8fafc;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background-color: #fff; }
+        textarea { height: 120px; resize: vertical; }
+
+        /* --- BUTTONS --- */
+        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: transform 0.1s ease, background-color 0.2s; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:active { transform: scale(0.98); } /* Functional feedback animation */
+        
+        .btn-outline { background-color: transparent; border: 2px solid var(--border); color: var(--text-main); width: auto; }
+        .btn-outline:hover { border-color: var(--text-muted); background-color: var(--bg-color); }
+        
+        .btn-danger { background-color: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 12px; font-size: 0.85rem; width: auto; margin-top: 10px; }
+        .btn-danger:hover { background-color: #fef2f2; }
+
+        /* --- DYNAMIC SECTION STYLES --- */
+        .custom-section-block { background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed #cbd5e1; }
+        .custom-section-block input { margin-bottom: 10px; }
+
+        /* --- RESUME UI (ATS-FRIENDLY) --- */
+        #resume-view { display: none; background: #fff; padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        .controls { background: var(--surface); padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .controls .btn-group { display: flex; gap: 15px; }
+        
+        /* The actual printable area */
+        #resume-content { padding: 50px; max-width: 850px; margin: 0 auto; color: #000; line-height: 1.4; }
+        
+        /* Fonts toggled by JS classes */
+        .font-times { font-family: 'Times New Roman', Times, serif; }
+        .font-arial { font-family: Arial, Helvetica, sans-serif; }
+
+        /* Resume Formatting */
+        #resume-content header { text-align: center; margin-bottom: 25px; }
+        #resume-content h1 { font-size: 2rem; margin: 0 0 5px 0; font-weight: bold; }
+        #resume-content .contact-info { font-size: 0.95rem; }
+        #resume-content section { margin-bottom: 20px; }
+        #resume-content h2 { font-size: 1.1rem; font-weight: bold; margin: 0 0 8px 0; border-bottom: 1px solid #000; text-transform: uppercase; }
+        #resume-content p { margin: 0 0 8px 0; text-align: justify; font-size: 0.95rem; }
+        #resume-content ul { margin: 0 0 10px 0; padding-left: 20px; }
+        #resume-content li { font-size: 0.95rem; margin-bottom: 4px; }
+
+        /* --- PRINT PDF STYLES --- */
+        @media print {
+            body { background: transparent; padding: 0; }
+            .app-container { max-width: 100%; width: 100%; margin: 0; }
+            #resume-view { box-shadow: none; border-radius: 0; }
+            .controls { display: none !important; }
+            #resume-content { padding: 0; }
+            @page { margin: 0.75in; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <div id="form-view">
+        <h1>Resume Configuration</h1>
+        <form id="resume-form">
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Full Name</label>
+                    <input type="text" id="in-name" placeholder="Gulshan Singh" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="in-phone" placeholder="+91 9530580660">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="in-email" placeholder="gulshanbaudh0606@gmail.com">
+                </div>
+                <div class="form-group full-width">
+                    <label>LinkedIn / GitHub / Portfolio</label>
+                    <input type="text" id="in-link" placeholder="github.com/Gulshan-Singh-gs">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Resume Font Style</label>
+                <select id="in-font">
+                    <option value="font-times">Times New Roman (Traditional & Safe)</option>
+                    <option value="font-arial">Arial (Modern & Clean)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Career Objective</label>
+                <textarea id="in-objective" placeholder="To build a high-impact career as a Software Engineer..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size: 1.2rem; border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-bottom: 15px; margin-top: 10px;">Resume Sections</label>
+                <div id="custom-sections-container">
+                    <div class="custom-section-block">
+                        <input type="text" class="sec-heading" value="Core Technical Competencies" placeholder="Section Heading (e.g., Skills)">
+                        <span class="help-text">Press ENTER to create a bullet point.</span>
+                        <textarea class="sec-desc" placeholder="Java&#10;Data Structures & Algorithms&#10;Cloud Computing"></textarea>
+                        <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline" id="add-section-btn" style="margin-top: 10px;">+ Add Another Section</button>
+            </div>
+
+            <button type="button" class="btn" id="generate-btn" style="margin-top: 20px;">Generate Professional PDF &rarr;</button>
+        </form>
+    </div>
+
+    <div id="resume-view">
+        <div class="controls">
+            <span style="font-weight: 600; color: var(--text-muted);">Preview Mode</span>
+            <div class="btn-group">
+                <button class="btn btn-outline" id="edit-btn">&larr; Edit Details</button>
+                <button class="btn" id="download-btn" style="width: auto;">Download PDF</button>
+            </div>
+        </div>
+
+        <div id="resume-content" class="font-times">
+            <header>
+                <h1 id="out-name">Name</h1>
+                <div class="contact-info">
+                    <span id="out-phone"></span> &nbsp;|&nbsp; <span id="out-email"></span> &nbsp;|&nbsp; <span id="out-link"></span>
+                </div>
+            </header>
+
+            <section id="objective-section">
+                <h2>Career Objective</h2>
+                <p id="out-objective"></p>
+            </section>
+
+            <div id="dynamic-output-container">
+                </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // 1. Element References
+    const formView = document.getElementById('form-view');
+    const resumeView = document.getElementById('resume-view');
+    const customSectionsContainer = document.getElementById('custom-sections-container');
+    const dynamicOutputContainer = document.getElementById('dynamic-output-container');
+    const resumeContentElement = document.getElementById('resume-content');
+
+    // 2. Utility: Convert text to list items
+    function textToListItems(text) {
+        if (!text.trim()) return '';
+        return text.split('\n')
+            .filter(line => line.trim() !== '')
+            .map(line => `<li>${line.trim()}</li>`)
+            .join('');
+    }
+
+    // 3. Dynamic Section Management (Add)
+    document.getElementById('add-section-btn').addEventListener('click', () => {
+        const newSection = document.createElement('div');
+        newSection.className = 'custom-section-block';
+        newSection.innerHTML = `
+            <input type="text" class="sec-heading" placeholder="Section Heading (e.g., Projects, Education)">
+            <span class="help-text">Press ENTER to create a bullet point.</span>
+            <textarea class="sec-desc" placeholder="Detail 1&#10;Detail 2"></textarea>
+            <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
+        `;
+        customSectionsContainer.appendChild(newSection);
+    });
+
+    // 4. Dynamic Section Management (Remove via Event Delegation)
+    customSectionsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-sec-btn')) {
+            e.target.parentElement.remove();
+        }
+    });
+
+    // 5. Generate Logic
+    document.getElementById('generate-btn').addEventListener('click', () => {
+        
+        // Handle Core Details
+        document.getElementById('out-name').innerText = document.getElementById('in-name').value || 'Name Not Provided';
+        document.getElementById('out-phone').innerText = document.getElementById('in-phone').value;
+        document.getElementById('out-email').innerText = document.getElementById('in-email').value;
+        document.getElementById('out-link').innerText = document.getElementById('in-link').value;
+        
+        const objectiveText = document.getElementById('in-objective').value;
+        document.getElementById('out-objective').innerText = objectiveText;
+        document.getElementById('objective-section').style.display = objectiveText.trim() ? 'block' : 'none';
+
+        // Handle Font Selection
+        const selectedFont = document.getElementById('in-font').value;
+        resumeContentElement.className = selectedFont; // Applies 'font-times' or 'font-arial'
+
+        // Handle Dynamic Sections
+        dynamicOutputContainer.innerHTML = ''; // Clear previous renders
+        const sectionBlocks = customSectionsContainer.querySelectorAll('.custom-section-block');
+        
+        sectionBlocks.forEach(block => {
+            const heading = block.querySelector('.sec-heading').value;
+            const descRaw = block.querySelector('.sec-desc').value;
+            const listItemsHTML = textToListItems(descRaw);
+
+            if (heading.trim() || listItemsHTML) {
+                const sectionHTML = `
+                    <section>
+                        <h2>${heading || 'Section'}</h2>
+                        <ul>${listItemsHTML}</ul>
+                    </section>
+                `;
+                dynamicOutputContainer.innerHTML += sectionHTML;
+            }
+        });
+
+        // Swap Views
+        formView.style.display = 'none';
+        resumeView.style.display = 'block';
+    });
+
+    // 6. View Swapping & Printing
+    document.getElementById('edit-btn').addEventListener('click', () => {
+        resumeView.style.display = 'none';
+        formView.style.display = 'block';
+    });
+
+    document.getElementById('download-btn').addEventListener('click', () => {
+        window.print();
+    });
+</script>
+
+</body>
+</html>
