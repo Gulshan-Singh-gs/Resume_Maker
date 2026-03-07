@@ -103,7 +103,7 @@
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label>Full Name</label>
-                    <input type="text" id="in-name" placeholder="Handsome Gulshan 😂" required>
+                    <input type="text" id="in-name" placeholder="Handsome Gulshan " required>
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
@@ -195,6 +195,69 @@
             .join('');
     }
 
+    // --- NEW: LOCAL STORAGE ENGINE ---
+    
+    // Load data when page opens
+    window.addEventListener('DOMContentLoaded', loadFromStorage);
+    
+    // Auto-save whenever anything is typed in the form
+    formView.addEventListener('input', saveToStorage);
+
+    function saveToStorage() {
+        const data = {
+            name: document.getElementById('in-name').value,
+            phone: document.getElementById('in-phone').value,
+            email: document.getElementById('in-email').value,
+            link: document.getElementById('in-link').value,
+            font: document.getElementById('in-font').value,
+            objective: document.getElementById('in-objective').value,
+            sections: [] // Array to hold dynamic blocks
+        };
+
+        const sectionBlocks = customSectionsContainer.querySelectorAll('.custom-section-block');
+        sectionBlocks.forEach(block => {
+            data.sections.push({
+                heading: block.querySelector('.sec-heading').value,
+                desc: block.querySelector('.sec-desc').value
+            });
+        });
+
+        localStorage.setItem('resumeData', JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+        const saved = localStorage.getItem('resumeData');
+        if (!saved) return; // Exit if first time user
+
+        const data = JSON.parse(saved);
+        
+        // Restore static fields
+        document.getElementById('in-name').value = data.name || '';
+        document.getElementById('in-phone').value = data.phone || '';
+        document.getElementById('in-email').value = data.email || '';
+        document.getElementById('in-link').value = data.link || '';
+        document.getElementById('in-font').value = data.font || 'font-times';
+        document.getElementById('in-objective').value = data.objective || '';
+
+        // Restore dynamic sections
+        if (data.sections && data.sections.length > 0) {
+            customSectionsContainer.innerHTML = ''; // Clear default empty block
+            data.sections.forEach(sec => {
+                const newSection = document.createElement('div');
+                newSection.className = 'custom-section-block';
+                newSection.innerHTML = `
+                    <input type="text" class="sec-heading" value="${sec.heading}" placeholder="Section Heading (e.g., Projects, Education)">
+                    <span class="help-text">Press ENTER to create a bullet point.</span>
+                    <textarea class="sec-desc" placeholder="Detail 1&#10;Detail 2">${sec.desc}</textarea>
+                    <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
+                `;
+                customSectionsContainer.appendChild(newSection);
+            });
+        }
+    }
+
+    // --- END LOCAL STORAGE ENGINE ---
+
     // 3. Dynamic Section Management (Add)
     document.getElementById('add-section-btn').addEventListener('click', () => {
         const newSection = document.createElement('div');
@@ -206,12 +269,14 @@
             <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
         `;
         customSectionsContainer.appendChild(newSection);
+        saveToStorage(); // Force save when a new section is added
     });
 
     // 4. Dynamic Section Management (Remove via Event Delegation)
     customSectionsContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-sec-btn')) {
             e.target.parentElement.remove();
+            saveToStorage(); // Force save when a section is deleted
         }
     });
 
@@ -230,10 +295,10 @@
 
         // Handle Font Selection
         const selectedFont = document.getElementById('in-font').value;
-        resumeContentElement.className = selectedFont; // Applies 'font-times' or 'font-arial'
+        resumeContentElement.className = selectedFont;
 
         // Handle Dynamic Sections
-        dynamicOutputContainer.innerHTML = ''; // Clear previous renders
+        dynamicOutputContainer.innerHTML = ''; 
         const sectionBlocks = customSectionsContainer.querySelectorAll('.custom-section-block');
         
         sectionBlocks.forEach(block => {
@@ -267,6 +332,5 @@
         window.print();
     });
 </script>
-
 </body>
 </html>
