@@ -69,13 +69,18 @@
         .signature-space { height: 40px; }
 
         /* --- PRINT PDF STYLES --- */
+        /* --- PRINT PDF STYLES --- */
         @media print {
-            body { background: transparent; padding: 0; }
+            /* Setting margin to 0 kills the browser's default headers and footers */
+            @page { margin: 0; } 
+            
+            /* Adding padding to the body pushes the text back into the safe zone */
+            body { background: transparent; padding: 1in; }
+            
             .app-container { max-width: 100%; width: 100%; margin: 0; }
             #letter-view { box-shadow: none; border-radius: 0; }
             .controls { display: none !important; }
             #letter-content { padding: 0; }
-            @page { margin: 1in; }
         }
     </style>
 </head>
