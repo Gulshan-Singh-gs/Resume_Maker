@@ -20,11 +20,13 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --accent: #2563eb;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding: 20px; }
-        .app-container { max-width: 850px; margin: 0 auto; }
+        .app-container { max-width: 900px; margin: 0 auto; }
 
         /* --- NAVIGATION --- */
         .back-nav { margin-bottom: 20px; }
@@ -43,14 +45,14 @@
         #form-view h1 { font-size: 2rem; margin-bottom: 30px; color: var(--text-main); font-weight: 700; letter-spacing: -0.5px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
         
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; position: relative; }
         .full-width { grid-column: 1 / -1; }
         
         label { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-main); }
         .help-text { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-style: italic; transition: color 0.3s; }
         .help-text.highlight { color: var(--accent); font-weight: 600; }
         
-        input[type="text"], input[type="email"], input[type="date"], select, textarea { 
+        input[type="text"], input[type="email"], input[type="date"], input[type="number"], select, textarea { 
             width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; 
             transition: all 0.2s ease; background-color: #f8fafc;
         }
@@ -59,6 +61,59 @@
 
         .geo-matrix { background: #eff6ff; border: 2px solid #bfdbfe; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
         .geo-matrix label { color: #1e3a8a; font-size: 1.1rem; }
+
+        /* --- FIELD TOGGLE BUTTONS --- */
+        .field-toggle {
+            position: absolute;
+            top: 32px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .field-toggle:hover { background: var(--danger-hover); transform: scale(1.1); }
+        .form-group:hover .field-toggle, .form-group:focus-within .field-toggle { display: flex; }
+        .form-group.disabled { opacity: 0.5; }
+        .form-group.disabled input, .form-group.disabled textarea, .form-group.disabled select {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+
+        /* --- ADD FIELD SECTION --- */
+        .add-field-section {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .add-field-section label { color: #166534; font-size: 1.1rem; }
+        .add-field-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 10px; }
+        .btn-add { width: auto; padding: 12px 20px; background: #16a34a; }
+        .btn-add:hover { background: #15803d; }
+
+        /* --- PAGE SETTINGS --- */
+        .page-settings {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .page-settings label { color: #92400e; font-size: 1.1rem; }
+        .page-control { display: flex; gap: 15px; align-items: center; margin-top: 10px; }
+        .page-control select { width: 200px; }
 
         /* --- BUTTONS --- */
         .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: transform 0.1s ease, background-color 0.2s; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
@@ -69,29 +124,88 @@
 
         /* --- COVER LETTER UI (TRADITIONAL FORMAT) --- */
         #letter-view { display: none; background: #fff; padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
-        .controls { background: var(--surface); padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .controls { background: var(--surface); padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .controls .btn-group { display: flex; gap: 15px; }
         
-        #letter-content { padding: 60px 80px; max-width: 850px; margin: 0 auto; color: #000; line-height: 1.6; font-family: 'Times New Roman', Times, serif; font-size: 1.05rem; }
+        #letter-content { 
+            padding: 60px 80px; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            color: #000; 
+            line-height: 1.6; 
+            font-family: 'Times New Roman', Times, serif; 
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
         
-        .header-block { display: flex; justify-content: space-between; margin-bottom: 30px; }
-        .sender-info { text-align: right; }
+        /* Proper Business Letter Layout */
+        .sender-block { text-align: right; margin-bottom: 20px; }
         .sender-name { font-weight: bold; font-size: 1.2rem; margin-bottom: 5px; }
-        .recipient-info { margin-bottom: 25px; }
-        .date-stamp { margin-bottom: 25px; }
+        .date-stamp { margin-bottom: 30px; text-align: right; }
+        
+        .recipient-block { margin-bottom: 25px; }
+        .recipient-name { font-weight: bold; margin-bottom: 5px; }
+        .subject-line { margin-bottom: 25px; font-weight: bold; }
+        
         .salutation { margin-bottom: 20px; font-weight: bold; }
         .letter-body p { margin-bottom: 15px; text-align: justify; }
         .sign-off { margin-top: 40px; }
         .signature-space { height: 40px; }
 
+        /* Visibility Toggle Classes */
+        .hide-element { display: none !important; }
+
         /* --- PRINT PDF STYLES --- */
         @media print {
-            @page { margin: 0; } /* Kills browser URL/Date headers */
-            body { background: transparent; padding: 1in; } /* Pushes text back into safe zone */
-            .app-container { max-width: 100%; width: 100%; margin: 0; }
-            #letter-view { box-shadow: none; border-radius: 0; }
-            .controls, .back-nav { display: none !important; }
-            #letter-content { padding: 0; }
+            @page { 
+                margin: 1in;
+                size: auto;
+            }
+            body { 
+                background: transparent; 
+                padding: 0; 
+            }
+            .app-container { 
+                max-width: 100%; 
+                width: 100%; 
+                margin: 0; 
+            }
+            #letter-view { 
+                box-shadow: none; 
+                border-radius: 0; 
+            }
+            .controls, .back-nav { 
+                display: none !important; 
+            }
+            #letter-content { 
+                padding: 0;
+                max-width: 100%;
+            }
+            
+            /* Page break controls */
+        }
+
+        /* Page limit enforcement */
+        .page-limit-1 #letter-content {
+            max-height: 1050px; /* Approximate for one page */
+            overflow: hidden;
+        }
+        
+        /* Font size adjustments for page fitting */
+        .font-tiny { font-size: 0.85rem !important; }
+        .font-small { font-size: 0.95rem !important; }
+        .font-normal { font-size: 1.05rem !important; }
+        .font-large { font-size: 1.15rem !important; }
+        
+        /* Line height adjustments */
+        .tight-spacing { line-height: 1.3 !important; }
+        .normal-spacing { line-height: 1.6 !important; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            #letter-content { padding: 40px; }
+            .add-field-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -109,6 +223,31 @@
         <h1>Universal Cover Letter Builder</h1>
         <form id="letter-form">
             
+            <!-- Page Settings -->
+            <div class="page-settings">
+                <label>📄 Page Limit Control</label>
+                <div class="page-control">
+                    <select id="page-limit">
+                        <option value="1">1 Page (Strict)</option>
+                        <option value="2" selected>2 Pages</option>
+                        <option value="3">3 Pages</option>
+                        <option value="0">Unlimited</option>
+                    </select>
+                    <span class="help-text" style="margin: 0;">Auto-adjusts font size and spacing to fit</span>
+                </div>
+            </div>
+
+            <!-- Add Custom Field Section -->
+            <div class="add-field-section">
+                <label>➕ Add Custom Field</label>
+                <div class="add-field-grid">
+                    <input type="text" id="custom-field-label" placeholder="Field Label (e.g., LinkedIn Profile)">
+                    <input type="text" id="custom-field-value" placeholder="Value">
+                    <button type="button" class="btn btn-add" id="add-custom-field">Add</button>
+                </div>
+                <span class="help-text">Add any additional information you want to include</span>
+            </div>
+
             <div class="form-group full-width geo-matrix">
                 <label>⚙️ Geo-Format Matrix</label>
                 <select id="in-region">
@@ -120,35 +259,81 @@
 
             <div class="form-grid">
                 <div class="form-group full-width"><h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Your Details</h3></div>
-                <div class="form-group"><label>Full Name</label><input type="text" id="in-name" placeholder="Gulshan Singh"></div>
-                <div class="form-group"><label>Phone Number</label><input type="text" id="in-phone" placeholder="+91 9530580660"></div>
-                <div class="form-group"><label>Email Address</label><input type="email" id="in-email" placeholder="gulshanbaudh0606@gmail.com"></div>
-                <div class="form-group"><label>City, Country</label><input type="text" id="in-location" placeholder="Punjab, India"></div>
+                
+                <div class="form-group" data-field="name">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Full Name</label>
+                    <input type="text" id="in-name" placeholder="Gulshan Singh" data-removable="true">
+                </div>
+                
+                <div class="form-group" data-field="phone">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Phone Number</label>
+                    <input type="text" id="in-phone" placeholder="+91 9530580660" data-removable="true">
+                </div>
+                
+                <div class="form-group" data-field="email">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Email Address</label>
+                    <input type="email" id="in-email" placeholder="gulshanbaudh0606@gmail.com" data-removable="true">
+                </div>
+                
+                <div class="form-group" data-field="location">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>City, Country</label>
+                    <input type="text" id="in-location" placeholder="Punjab, India" data-removable="true">
+                </div>
 
                 <div class="form-group full-width"><h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 10px;">Employer Details</h3></div>
-                <div class="form-group"><label>Hiring Manager Name (or "Hiring Team")</label><input type="text" id="in-hm-name" placeholder="Mr. Sharma / Hiring Manager"></div>
-                <div class="form-group"><label>Target Job Title</label><input type="text" id="in-role" placeholder="Backend Software Engineer"></div>
-                <div class="form-group full-width"><label>Company Name & City</label><input type="text" id="in-company" placeholder="TechCorp India, Bangalore"></div>
-                <div class="form-group"><label>Date of Application</label><input type="date" id="in-date"></div>
+                
+                <div class="form-group" data-field="hmName">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Hiring Manager Name (or "Hiring Team")</label>
+                    <input type="text" id="in-hm-name" placeholder="Mr. Sharma / Hiring Manager" data-removable="true">
+                </div>
+                
+                <div class="form-group" data-field="role">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Target Job Title</label>
+                    <input type="text" id="in-role" placeholder="Backend Software Engineer" data-removable="true">
+                </div>
+                
+                <div class="form-group full-width" data-field="company">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Company Name & City</label>
+                    <input type="text" id="in-company" placeholder="TechCorp India, Bangalore" data-removable="true">
+                </div>
+                
+                <div class="form-group" data-field="date">
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>Date of Application</label>
+                    <input type="date" id="in-date" data-removable="true">
+                </div>
             </div>
 
-            <div class="form-group" style="margin-top: 20px;">
+            <div class="form-group" data-field="p1">
+                <button type="button" class="field-toggle" title="Remove field">×</button>
                 <label>Opening Hook (Paragraph 1)</label>
                 <span id="prompt-intro" class="help-text highlight">ASIA PROMPT: State the exact role, where you found it, and immediately highlight your degree and academic pedigree.</span>
-                <textarea id="in-p1"></textarea>
+                <textarea id="in-p1" data-removable="true"></textarea>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-field="p2">
+                <button type="button" class="field-toggle" title="Remove field">×</button>
                 <label>Value Proposition (Paragraph 2)</label>
                 <span id="prompt-body" class="help-text highlight">ASIA PROMPT: Hammer your hard skills (Java, DSA). Mention certifications, concrete metrics, and operational discipline to prove immediate ROI.</span>
-                <textarea id="in-p2"></textarea>
+                <textarea id="in-p2" data-removable="true"></textarea>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-field="p3">
+                <button type="button" class="field-toggle" title="Remove field">×</button>
                 <label>Call to Action & Closing (Paragraph 3)</label>
                 <span id="prompt-outro" class="help-text highlight">ASIA PROMPT: Be highly respectful. Thank them for their time and explicitly state your availability for a technical interview.</span>
-                <textarea id="in-p3"></textarea>
+                <textarea id="in-p3" data-removable="true"></textarea>
             </div>
+
+            <!-- Custom Fields Container -->
+            <div id="custom-fields-container"></div>
 
             <button type="button" class="btn" id="generate-btn" style="margin-top: 20px;">Compile Professional Document &rarr;</button>
         </form>
@@ -164,30 +349,41 @@
         </div>
 
         <div id="letter-content">
-            <div class="header-block">
-                <div class="recipient-info">
-                    <span id="out-hm-name" style="font-weight: bold;"></span><br>
-                    <span id="out-company"></span><br>
-                    Re: Application for <span id="out-role" style="font-weight: bold;"></span>
-                </div>
-                <div class="sender-info">
-                    <div class="sender-name" id="out-name"></div>
-                    <span id="out-location"></span><br>
-                    <span id="out-phone"></span><br>
-                    <span id="out-email"></span>
-                </div>
+            <!-- Sender Info (Top Right) -->
+            <div class="sender-block" id="sender-block">
+                <div class="sender-name" id="out-name"></div>
+                <div id="out-location"></div>
+                <div id="out-phone"></div>
+                <div id="out-email"></div>
+                <!-- Custom fields will be inserted here -->
+                <div id="sender-custom-fields"></div>
             </div>
 
+            <!-- Date -->
             <div class="date-stamp" id="out-date"></div>
 
+            <!-- Recipient Info (Left) -->
+            <div class="recipient-block" id="recipient-block">
+                <div class="recipient-name" id="out-hm-name"></div>
+                <div id="out-company"></div>
+            </div>
+
+            <!-- Subject Line -->
+            <div class="subject-line" id="subject-line">
+                Re: Application for <span id="out-role" style="font-weight: bold;"></span>
+            </div>
+
+            <!-- Salutation -->
             <div class="salutation">Dear <span id="out-salutation-name"></span>,</div>
 
+            <!-- Letter Body -->
             <div class="letter-body">
                 <p id="out-p1"></p>
                 <p id="out-p2"></p>
                 <p id="out-p3"></p>
             </div>
 
+            <!-- Sign Off -->
             <div class="sign-off">
                 Sincerely,<br>
                 <div class="signature-space"></div>
@@ -205,6 +401,25 @@
     // 2. Element References
     const formView = document.getElementById('form-view');
     const letterView = document.getElementById('letter-view');
+    const letterContent = document.getElementById('letter-content');
+    
+    // Track visible fields
+    let visibleFields = {
+        name: true,
+        phone: true,
+        email: true,
+        location: true,
+        hmName: true,
+        role: true,
+        company: true,
+        date: true,
+        p1: true,
+        p2: true,
+        p3: true
+    };
+
+    // Custom fields array
+    let customFields = [];
     
     // 3. Geo-Format Matrix Logic (Dynamic Prompts)
     const regionSelect = document.getElementById('in-region');
@@ -251,7 +466,68 @@
         saveToStorage();
     });
 
-    // 4. LocalStorage Engine
+    // 4. Field Toggle Functionality
+    document.querySelectorAll('.field-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const formGroup = this.closest('.form-group');
+            const fieldName = formGroup.dataset.field;
+            
+            if (visibleFields[fieldName]) {
+                // Hide field
+                visibleFields[fieldName] = false;
+                formGroup.classList.add('disabled');
+                formGroup.querySelector('input, textarea, select').disabled = true;
+            } else {
+                // Show field
+                visibleFields[fieldName] = true;
+                formGroup.classList.remove('disabled');
+                formGroup.querySelector('input, textarea, select').disabled = false;
+            }
+            saveToStorage();
+        });
+    });
+
+    // 5. Add Custom Field Functionality
+    document.getElementById('add-custom-field').addEventListener('click', function() {
+        const label = document.getElementById('custom-field-label').value.trim();
+        const value = document.getElementById('custom-field-value').value.trim();
+        
+        if (!label || !value) {
+            alert('Please fill in both field label and value');
+            return;
+        }
+        
+        const fieldId = 'custom-' + Date.now();
+        customFields.push({ id: fieldId, label, value });
+        
+        // Add to form
+        const container = document.getElementById('custom-fields-container');
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'form-group';
+        fieldDiv.dataset.field = fieldId;
+        fieldDiv.innerHTML = `
+            <button type="button" class="field-toggle" title="Remove field">×</button>
+            <label>${label}</label>
+            <input type="text" id="${fieldId}" value="${value}" data-removable="true" data-custom="true">
+        `;
+        container.appendChild(fieldDiv);
+        
+        // Add toggle functionality
+        const toggleBtn = fieldDiv.querySelector('.field-toggle');
+        toggleBtn.addEventListener('click', function() {
+            customFields = customFields.filter(f => f.id !== fieldId);
+            fieldDiv.remove();
+            saveToStorage();
+        });
+        
+        // Clear inputs
+        document.getElementById('custom-field-label').value = '';
+        document.getElementById('custom-field-value').value = '';
+        
+        saveToStorage();
+    });
+
+    // 6. LocalStorage Engine
     window.addEventListener('DOMContentLoaded', loadFromStorage);
     formView.addEventListener('input', saveToStorage);
 
@@ -268,7 +544,10 @@
             date: document.getElementById('in-date').value,
             p1: document.getElementById('in-p1').value,
             p2: document.getElementById('in-p2').value,
-            p3: document.getElementById('in-p3').value
+            p3: document.getElementById('in-p3').value,
+            visibleFields: visibleFields,
+            customFields: customFields,
+            pageLimit: document.getElementById('page-limit').value
         };
         localStorage.setItem('letterData', JSON.stringify(data));
     }
@@ -290,13 +569,104 @@
         document.getElementById('in-p2').value = data.p2 || '';
         document.getElementById('in-p3').value = data.p3 || '';
         if(data.date) document.getElementById('in-date').value = data.date;
+        
+        // Restore visible fields
+        if (data.visibleFields) {
+            visibleFields = data.visibleFields;
+            Object.keys(visibleFields).forEach(fieldName => {
+                const formGroup = document.querySelector(`[data-field="${fieldName}"]`);
+                if (formGroup) {
+                    if (!visibleFields[fieldName]) {
+                        formGroup.classList.add('disabled');
+                        const input = formGroup.querySelector('input, textarea, select');
+                        if (input) input.disabled = true;
+                    }
+                }
+            });
+        }
+        
+        // Restore custom fields
+        if (data.customFields && data.customFields.length > 0) {
+            customFields = data.customFields;
+            const container = document.getElementById('custom-fields-container');
+            container.innerHTML = '';
+            customFields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'form-group';
+                fieldDiv.dataset.field = field.id;
+                fieldDiv.innerHTML = `
+                    <button type="button" class="field-toggle" title="Remove field">×</button>
+                    <label>${field.label}</label>
+                    <input type="text" id="${field.id}" value="${field.value}" data-removable="true" data-custom="true">
+                `;
+                container.appendChild(fieldDiv);
+                
+                const toggleBtn = fieldDiv.querySelector('.field-toggle');
+                toggleBtn.addEventListener('click', function() {
+                    customFields = customFields.filter(f => f.id !== field.id);
+                    fieldDiv.remove();
+                    saveToStorage();
+                });
+            });
+        }
+        
+        // Restore page limit
+        if (data.pageLimit) {
+            document.getElementById('page-limit').value = data.pageLimit;
+        }
 
         // Manually trigger region change to set correct prompts on load
         regionSelect.dispatchEvent(new Event('change'));
     }
 
-    // 5. Generate Logic
+    // 7. Page Limit Adjustment Function
+    function adjustForPageLimit() {
+        const pageLimit = parseInt(document.getElementById('page-limit').value);
+        
+        // Remove previous adjustment classes
+        letterContent.classList.remove('font-tiny', 'font-small', 'font-normal', 'font-large');
+        letterContent.classList.remove('tight-spacing', 'normal-spacing');
+        letterContent.classList.remove('page-limit-1');
+        
+        if (pageLimit === 0) return; // Unlimited
+        
+        // Check content height and adjust
+        const contentHeight = letterContent.scrollHeight;
+        const pageHeight = 1050; // Approximate pixels per page
+        const maxHeight = pageHeight * pageLimit;
+        
+        if (contentHeight > maxHeight) {
+            // Need to reduce size
+            if (pageLimit === 1) {
+                letterContent.classList.add('font-small', 'tight-spacing');
+            } else {
+                letterContent.classList.add('font-small');
+            }
+        }
+    }
+
+    // 8. Generate Logic
     document.getElementById('generate-btn').addEventListener('click', () => {
+        // Toggle visibility based on visibleFields
+        toggleElementVisibility('out-name', visibleFields.name);
+        toggleElementVisibility('out-location', visibleFields.location);
+        toggleElementVisibility('out-phone', visibleFields.phone);
+        toggleElementVisibility('out-email', visibleFields.email);
+        toggleElementVisibility('sender-block', visibleFields.name || visibleFields.location || visibleFields.phone || visibleFields.email);
+        
+        toggleElementVisibility('out-hm-name', visibleFields.hmName);
+        toggleElementVisibility('out-company', visibleFields.company);
+        toggleElementVisibility('recipient-block', visibleFields.hmName || visibleFields.company);
+        
+        toggleElementVisibility('out-role', visibleFields.role);
+        toggleElementVisibility('subject-line', visibleFields.role);
+        
+        toggleElementVisibility('out-date', visibleFields.date);
+        
+        toggleElementVisibility('out-p1', visibleFields.p1);
+        toggleElementVisibility('out-p2', visibleFields.p2);
+        toggleElementVisibility('out-p3', visibleFields.p3);
+        
         const name = document.getElementById('in-name').value || '[Your Name]';
         const hmName = document.getElementById('in-hm-name').value || 'Hiring Manager';
         
@@ -322,12 +692,35 @@
         document.getElementById('out-p1').innerHTML = document.getElementById('in-p1').value.replace(/\n/g, '<br>');
         document.getElementById('out-p2').innerHTML = document.getElementById('in-p2').value.replace(/\n/g, '<br>');
         document.getElementById('out-p3').innerHTML = document.getElementById('in-p3').value.replace(/\n/g, '<br>');
+        
+        // Add custom fields to sender block
+        const senderCustomFields = document.getElementById('sender-custom-fields');
+        senderCustomFields.innerHTML = '';
+        customFields.forEach(field => {
+            const div = document.createElement('div');
+            div.innerText = field.value;
+            senderCustomFields.appendChild(div);
+        });
 
         formView.style.display = 'none';
         letterView.style.display = 'block';
+        
+        // Adjust for page limit after content is rendered
+        setTimeout(adjustForPageLimit, 100);
     });
+    
+    function toggleElementVisibility(elementId, isVisible) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            if (isVisible) {
+                element.classList.remove('hide-element');
+            } else {
+                element.classList.add('hide-element');
+            }
+        }
+    }
 
-    // 6. Navigation & Print
+    // 9. Navigation & Print
     document.getElementById('edit-btn').addEventListener('click', () => {
         letterView.style.display = 'none';
         formView.style.display = 'block';
@@ -335,6 +728,14 @@
 
     document.getElementById('download-btn').addEventListener('click', () => {
         window.print();
+    });
+    
+    // Page limit change listener
+    document.getElementById('page-limit').addEventListener('change', () => {
+        saveToStorage();
+        if (letterView.style.display === 'block') {
+            adjustForPageLimit();
+        }
     });
 </script>
 
