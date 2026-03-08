@@ -71,6 +71,21 @@
         .letter-body p { margin-bottom: 15px; text-align: justify; }
         .sign-off { margin-top: 40px; }
         .signature-space { height: 40px; }
+        /* --- APP NAVIGATION --- */
+        .app-nav { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .nav-link { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; 
+            padding: 8px 14px; border-radius: 8px; background-color: var(--surface); 
+            border: 1px solid var(--border); transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .nav-link:hover { 
+            color: var(--primary); border-color: var(--primary); background-color: #eff6ff; transform: translateY(-1px);
+        }
+        .nav-link svg { width: 16px; height: 16px; stroke: currentColor; }
+        
+        /* Ensure the nav hides when printing */
+        @media print { .app-nav { display: none !important; } }
 
         /* --- PRINT PDF STYLES --- */
         @media print {
@@ -86,6 +101,16 @@
 <body>
 
 <div class="app-container">
+    <div class="app-nav">
+        <a href="index.html" class="nav-link">
+            &larr; Back to Resume Builder
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px;">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+        </a>
+    </div>
 
     <div id="form-view">
         <h1>Universal Cover Letter Builder</h1>
