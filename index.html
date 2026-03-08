@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="fevicon.png">
 
     <style>
         /* --- MODERN GLOBAL STYLES --- */
@@ -29,7 +29,7 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding: 20px; }
         .app-container { max-width: 850px; margin: 0 auto; }
 
-        /* --- SLEEK FORM UI (No Bloat, Just Polish) --- */
+        /* --- SLEEK FORM UI --- */
         #form-view { background: var(--surface); padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; transition: opacity 0.3s ease; }
         #form-view h1 { font-size: 2rem; margin-bottom: 30px; color: var(--text-main); font-weight: 700; letter-spacing: -0.5px; }
         
@@ -50,7 +50,7 @@
         /* --- BUTTONS --- */
         .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: transform 0.1s ease, background-color 0.2s; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
         .btn:hover { background-color: var(--primary-hover); }
-        .btn:active { transform: scale(0.98); } /* Functional feedback animation */
+        .btn:active { transform: scale(0.98); } 
         
         .btn-outline { background-color: transparent; border: 2px solid var(--border); color: var(--text-main); width: auto; }
         .btn-outline:hover { border-color: var(--text-muted); background-color: var(--bg-color); }
@@ -67,14 +67,11 @@
         .controls { background: var(--surface); padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .controls .btn-group { display: flex; gap: 15px; }
         
-        /* The actual printable area */
         #resume-content { padding: 50px; max-width: 850px; margin: 0 auto; color: #000; line-height: 1.4; }
         
-        /* Fonts toggled by JS classes */
         .font-times { font-family: 'Times New Roman', Times, serif; }
         .font-arial { font-family: Arial, Helvetica, sans-serif; }
 
-        /* Resume Formatting */
         #resume-content header { text-align: center; margin-bottom: 25px; }
         #resume-content h1 { font-size: 2rem; margin: 0 0 5px 0; font-weight: bold; }
         #resume-content .contact-info { font-size: 0.95rem; }
@@ -83,6 +80,7 @@
         #resume-content p { margin: 0 0 8px 0; text-align: justify; font-size: 0.95rem; }
         #resume-content ul { margin: 0 0 10px 0; padding-left: 20px; }
         #resume-content li { font-size: 0.95rem; margin-bottom: 4px; }
+        
         /* --- APP NAVIGATION --- */
         .app-nav { display: flex; justify-content: flex-end; margin-bottom: 15px; }
         .nav-link { 
@@ -96,23 +94,23 @@
         }
         .nav-link svg { width: 16px; height: 16px; stroke: currentColor; }
         
-        /* Ensure the nav hides when printing */
-        @media print { .app-nav { display: none !important; } }
         /* --- PRINT PDF STYLES --- */
         @media print {
-            body { background: transparent; padding: 0; }
+            @page { margin: 0; }
+            body { background: transparent; padding: 0.75in; }
             .app-container { max-width: 100%; width: 100%; margin: 0; }
             #resume-view { box-shadow: none; border-radius: 0; }
             .controls { display: none !important; }
             #resume-content { padding: 0; }
-            @page { margin: 0.75in; }
+            .app-nav { display: none !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-<div class="app-nav">
+    
+    <div class="app-nav">
         <a href="CoverLetter_Maker.html" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -124,6 +122,7 @@
             Switch to Cover Letter Builder &rarr;
         </a>
     </div>
+
     <div id="form-view">
         <h1>Resume Configuration</h1>
         <form id="resume-form">
@@ -131,7 +130,7 @@
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label>Full Name</label>
-                    <input type="text" id="in-name" placeholder="Handsome Gulshan " required>
+                    <input type="text" id="in-name" placeholder="Handsome Gulshan" required>
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
@@ -199,22 +198,19 @@
                 <p id="out-objective"></p>
             </section>
 
-            <div id="dynamic-output-container">
-                </div>
+            <div id="dynamic-output-container"></div>
         </div>
     </div>
 
 </div>
 
 <script>
-    // 1. Element References
     const formView = document.getElementById('form-view');
     const resumeView = document.getElementById('resume-view');
     const customSectionsContainer = document.getElementById('custom-sections-container');
     const dynamicOutputContainer = document.getElementById('dynamic-output-container');
     const resumeContentElement = document.getElementById('resume-content');
 
-    // 2. Utility: Convert text to list items
     function textToListItems(text) {
         if (!text.trim()) return '';
         return text.split('\n')
@@ -223,12 +219,8 @@
             .join('');
     }
 
-    // --- NEW: LOCAL STORAGE ENGINE ---
-    
-    // Load data when page opens
+    // --- LOCAL STORAGE ENGINE ---
     window.addEventListener('DOMContentLoaded', loadFromStorage);
-    
-    // Auto-save whenever anything is typed in the form
     formView.addEventListener('input', saveToStorage);
 
     function saveToStorage() {
@@ -239,7 +231,7 @@
             link: document.getElementById('in-link').value,
             font: document.getElementById('in-font').value,
             objective: document.getElementById('in-objective').value,
-            sections: [] // Array to hold dynamic blocks
+            sections: [] 
         };
 
         const sectionBlocks = customSectionsContainer.querySelectorAll('.custom-section-block');
@@ -255,11 +247,10 @@
 
     function loadFromStorage() {
         const saved = localStorage.getItem('resumeData');
-        if (!saved) return; // Exit if first time user
+        if (!saved) return; 
 
         const data = JSON.parse(saved);
         
-        // Restore static fields
         document.getElementById('in-name').value = data.name || '';
         document.getElementById('in-phone').value = data.phone || '';
         document.getElementById('in-email').value = data.email || '';
@@ -267,16 +258,16 @@
         document.getElementById('in-font').value = data.font || 'font-times';
         document.getElementById('in-objective').value = data.objective || '';
 
-        // Restore dynamic sections
-        if (data.sections && data.sections.length > 0) {
-            customSectionsContainer.innerHTML = ''; // Clear default empty block
+        // FIX: Removed the .length condition to ensure ghost blocks stay dead
+        if (data.sections) {
+            customSectionsContainer.innerHTML = ''; 
             data.sections.forEach(sec => {
                 const newSection = document.createElement('div');
                 newSection.className = 'custom-section-block';
                 newSection.innerHTML = `
                     <input type="text" class="sec-heading" value="${sec.heading}" placeholder="Section Heading (e.g., Projects, Education)">
                     <span class="help-text">Press ENTER to create a bullet point.</span>
-                    <textarea class="sec-desc" placeholder="Detail 1&#10;Detail 2">${sec.desc}</textarea>
+                    <textarea class="sec-desc" placeholder="Detail 1\nDetail 2">${sec.desc}</textarea>
                     <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
                 `;
                 customSectionsContainer.appendChild(newSection);
@@ -284,34 +275,29 @@
         }
     }
 
-    // --- END LOCAL STORAGE ENGINE ---
-
-    // 3. Dynamic Section Management (Add)
+    // --- DYNAMIC SECTIONS ---
     document.getElementById('add-section-btn').addEventListener('click', () => {
         const newSection = document.createElement('div');
         newSection.className = 'custom-section-block';
         newSection.innerHTML = `
             <input type="text" class="sec-heading" placeholder="Section Heading (e.g., Projects, Education)">
             <span class="help-text">Press ENTER to create a bullet point.</span>
-            <textarea class="sec-desc" placeholder="Detail 1&#10;Detail 2"></textarea>
+            <textarea class="sec-desc" placeholder="Detail 1\nDetail 2"></textarea>
             <button type="button" class="btn btn-danger remove-sec-btn">Remove Section</button>
         `;
         customSectionsContainer.appendChild(newSection);
-        saveToStorage(); // Force save when a new section is added
+        saveToStorage(); 
     });
 
-    // 4. Dynamic Section Management (Remove via Event Delegation)
     customSectionsContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-sec-btn')) {
             e.target.parentElement.remove();
-            saveToStorage(); // Force save when a section is deleted
+            saveToStorage(); 
         }
     });
 
-    // 5. Generate Logic
+    // --- GENERATE & PRINT LOGIC ---
     document.getElementById('generate-btn').addEventListener('click', () => {
-        
-        // Handle Core Details
         document.getElementById('out-name').innerText = document.getElementById('in-name').value || 'Name Not Provided';
         document.getElementById('out-phone').innerText = document.getElementById('in-phone').value;
         document.getElementById('out-email').innerText = document.getElementById('in-email').value;
@@ -321,11 +307,9 @@
         document.getElementById('out-objective').innerText = objectiveText;
         document.getElementById('objective-section').style.display = objectiveText.trim() ? 'block' : 'none';
 
-        // Handle Font Selection
         const selectedFont = document.getElementById('in-font').value;
         resumeContentElement.className = selectedFont;
 
-        // Handle Dynamic Sections
         dynamicOutputContainer.innerHTML = ''; 
         const sectionBlocks = customSectionsContainer.querySelectorAll('.custom-section-block');
         
@@ -345,12 +329,10 @@
             }
         });
 
-        // Swap Views
         formView.style.display = 'none';
         resumeView.style.display = 'block';
     });
 
-    // 6. View Swapping & Printing
     document.getElementById('edit-btn').addEventListener('click', () => {
         resumeView.style.display = 'none';
         formView.style.display = 'block';
